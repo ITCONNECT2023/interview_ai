@@ -24,9 +24,23 @@ export async function processInterviewWorkflow(jobId: string) {
     await validateAndSaveTranscript(jobId, transcript);
     return { jobId, status: "TRANSCRIPT_READY" as const };
   } catch (error) {
-    await markProcessingFailed(jobId, error instanceof Error ? error.message : "UNKNOWN");
+    await markProcessingFailed(jobId, workflowErrorMessage(error));
     throw error;
   } finally {
     if (geminiFileName) await deleteGeminiFile(geminiFileName);
   }
+}
+
+function workflowErrorMessage(error: unknown) {
+  if (typeof error === "string" && error.trim()) return error;
+  if (error && typeof error === "object") {
+    const value = error as Record<string, unknown>;
+    if (typeof value.message === "string" && value.message.trim()) return value.message;
+    if (typeof value.error === "string" && value.error.trim()) return value.error;
+    if (value.cause && typeof value.cause === "object") {
+      const cause = value.cause as Record<string, unknown>;
+      if (typeof cause.message === "string" && cause.message.trim()) return cause.message;
+    }
+  }
+  return "UNKNOWN";
 }

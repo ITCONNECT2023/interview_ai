@@ -8,6 +8,12 @@ describe("evidence validators", () => {
     expect(validateArticleEvidence(demoDraft, demoTranscript)).toEqual([]);
   });
 
+  it("blocks overlapping transcript timestamps", () => {
+    const transcript = structuredClone(demoTranscript);
+    transcript.segments[1].startMs = transcript.segments[0].endMs - 1;
+    expect(validateTranscriptEvidence(transcript)).toContain(`타임코드 오류: ${transcript.segments[1].id}`);
+  });
+
   it("blocks modified direct quotes", () => {
     const draft = structuredClone(demoDraft);
     draft.paragraphs[1].text = "정부 관계자는 “기본 방침은 완전히 바뀌었습니다.”라고 말했다.";

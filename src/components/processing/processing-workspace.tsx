@@ -46,7 +46,19 @@ export function ProcessingWorkspace({ jobId }: { jobId: string }) {
         <div className="panel-header"><div className="flex items-center gap-3"><span className="brand-mark" style={{ background: "#eff6ff", color: "#2563eb" }}><FileAudio size={18} /></span><div><strong className="block text-sm">{job?.originalName ?? "작업 정보를 확인하는 중"}</strong><span className="help">{job ? `${Math.round(job.durationMsFromClient / 1000)}초 · ${job.metadata.title}` : "새로고침해도 같은 작업을 이어갑니다."}</span></div></div><span className="badge"><Clock3 size={12} /> {elapsed}초 경과</span></div>
         <div className="panel-body">
           <ol className="grid gap-3">
-            {stages.map((stage, index) => { const number = index + 1; const done = complete || number < activeIndex; const active = !complete && number === activeIndex; return <li key={stage} className={`flex items-center gap-3 rounded-lg border p-3 ${active ? "border-blue-200 bg-blue-50" : done ? "border-emerald-200 bg-emerald-50/50" : "border-slate-200"}`}><span className={`grid h-7 w-7 place-items-center rounded-full text-xs font-bold ${done ? "bg-emerald-600 text-white" : active ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-400"}`}>{done ? <Check size={15} /> : number}</span><div><strong className="block text-sm">{stage}</strong><span className="help">{active ? "처리 중" : done ? "완료" : "대기"}</span></div>{active && <LoaderCircle size={16} className="ml-auto animate-spin text-blue-600" />}</li>; })}
+            {stages.map((stage, index) => {
+              const number = index + 1;
+              const done = complete || number < activeIndex;
+              const active = !complete && !failed && number === activeIndex;
+              const errorStage = failed && number === activeIndex;
+              return (
+                <li key={stage} className={`flex items-center gap-3 rounded-lg border p-3 ${active ? "border-blue-200 bg-blue-50" : errorStage ? "border-rose-200 bg-rose-50" : done ? "border-emerald-200 bg-emerald-50/50" : "border-slate-200"}`}>
+                  <span className={`grid h-7 w-7 place-items-center rounded-full text-xs font-bold ${done ? "bg-emerald-600 text-white" : active ? "bg-blue-600 text-white" : errorStage ? "bg-rose-600 text-white" : "bg-slate-100 text-slate-400"}`}>{done ? <Check size={15} /> : errorStage ? <AlertTriangle size={15} /> : number}</span>
+                  <div><strong className="block text-sm">{stage}</strong><span className="help">{active ? "처리 중" : done ? "완료" : errorStage ? "오류" : "대기"}</span></div>
+                  {active && <LoaderCircle size={16} className="ml-auto animate-spin text-blue-600" />}
+                </li>
+              );
+            })}
           </ol>
         </div>
       </section>

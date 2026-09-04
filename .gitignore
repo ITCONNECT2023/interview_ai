@@ -10,6 +10,7 @@ test-results/
 
 /.swc
 .pnpm-store/
+.local-data/
 sample/*.mp3
 sample/*.m4a
 sample/*.wav

@@ -23,6 +23,7 @@ export function UploadWorkspace() {
   const [extractQuotes, setExtractQuotes] = useState(true);
   const [extractFacts, setExtractFacts] = useState(true);
   const [progress, setProgress] = useState(0);
+  const [uploadMode, setUploadMode] = useState<"local" | "vercel-blob">("local");
   const [status, setStatus] = useState<"idle" | "uploading" | "done" | "error">("idle");
   const [error, setError] = useState("");
 
@@ -54,16 +55,19 @@ export function UploadWorkspace() {
       const prepId = crypto.randomUUID();
       const prefixResponse = await fetch("/api/blob/upload");
       if (!prefixResponse.ok) throw new Error(await getApiMessage(prefixResponse));
-      const { prefix } = await prefixResponse.json() as { prefix: string };
+      const { prefix, mode } = await prefixResponse.json() as { prefix: string; mode: "local" | "vercel-blob" };
+      setUploadMode(mode);
       const safeName = audio.file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-      const blob = await upload(`${prefix}/${prepId}/${safeName}`, audio.file, {
-        access: "private",
-        handleUploadUrl: "/api/blob/upload",
-        multipart: audio.file.size > 5 * 1024 * 1024,
-        contentType: audio.file.type,
-        clientPayload: JSON.stringify({ prepId, mimeType: audio.file.type, bytes: audio.file.size }),
-        onUploadProgress: ({ percentage }) => setProgress(Math.round(percentage)),
-      });
+      const blob = mode === "local"
+        ? await uploadLocalFile(audio.file, prepId, setProgress)
+        : await upload(`${prefix}/${prepId}/${safeName}`, audio.file, {
+            access: "private",
+            handleUploadUrl: "/api/blob/upload",
+            multipart: audio.file.size > 5 * 1024 * 1024,
+            contentType: audio.file.type,
+            clientPayload: JSON.stringify({ prepId, mimeType: audio.file.type, bytes: audio.file.size }),
+            onUploadProgress: ({ percentage }) => setProgress(Math.round(percentage)),
+          });
       setProgress(100);
       const response = await fetch("/api/jobs", {
         method: "POST",
@@ -106,7 +110,7 @@ export function UploadWorkspace() {
             )}
             <input ref={inputRef} className="sr-only" type="file" accept=".mp3,.m4a,.wav,audio/mpeg,audio/mp4,audio/wav,audio/x-wav" onChange={(event) => void chooseFile(event.target.files?.[0])} />
             {fileError && <p className="error-text" style={{ marginTop: 10 }}><AlertTriangle size={14} className="inline" /> {fileError}</p>}
-            {status === "uploading" && <div style={{ marginTop: 18 }}><div className="flex justify-between text-xs"><span>Private Blob으로 전송 중</span><strong>{progress}%</strong></div><div className="progress-track" style={{ marginTop: 8 }}><div className="progress-fill" style={{ width: `${progress}%` }} /></div></div>}
+            {status === "uploading" && <div style={{ marginTop: 18 }}><div className="flex justify-between text-xs"><span>{uploadMode === "local" ? "내 컴퓨터에 안전하게 저장 중" : "Private Blob으로 전송 중"}</span><strong>{progress}%</strong></div><div className="progress-track" style={{ marginTop: 8 }}><div className="progress-fill" style={{ width: `${progress}%` }} /></div></div>}
           </div>
         </section>
 
@@ -156,3 +160,25 @@ function readDuration(file: File) {
 function formatBytes(bytes: number) { return bytes > 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(1)}MB` : `${Math.ceil(bytes / 1024)}KB`; }
 function formatTime(ms: number) { const seconds = Math.round(ms / 1000); return `${Math.floor(seconds / 60)}분 ${seconds % 60}초`; }
 async function getApiMessage(response: Response) { try { const body = await response.json() as { error?: { message?: string } }; return body.error?.message ?? "요청에 실패했습니다."; } catch { return "요청에 실패했습니다."; } }
+type StoredUpload = { pathname: string; url: string; etag: string };
+
+function uploadLocalFile(file: File, prepId: string, onProgress: (percentage: number) => void) {
+  return new Promise<StoredUpload>((resolve, reject) => {
+    const request = new XMLHttpRequest();
+    request.open("POST", "/api/blob/upload");
+    request.responseType = "json";
+    request.upload.onprogress = (event) => {
+      if (event.lengthComputable) onProgress(Math.round((event.loaded / event.total) * 100));
+    };
+    request.onload = () => {
+      const body = request.response as StoredUpload | { error?: { message?: string } } | null;
+      if (request.status >= 200 && request.status < 300 && body && "pathname" in body) resolve(body);
+      else reject(new Error(body && "error" in body ? body.error?.message ?? "로컬 저장에 실패했습니다." : "로컬 저장에 실패했습니다."));
+    };
+    request.onerror = () => reject(new Error("로컬 저장 서버에 연결하지 못했습니다."));
+    const form = new FormData();
+    form.append("file", file);
+    form.append("prepId", prepId);
+    request.send(form);
+  });
+}

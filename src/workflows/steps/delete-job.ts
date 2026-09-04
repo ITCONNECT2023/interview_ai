@@ -1,6 +1,7 @@
 import { del } from "@vercel/blob";
 import { deleteJobData, getJob, patchJob } from "@/lib/db/repository";
 import { getServerEnv } from "@/lib/env/server";
+import { deleteLocalAudio, isLocalAudioUrl } from "@/lib/storage/audio";
 
 export async function markDeleting(jobId: string) {
   "use step";
@@ -10,6 +11,10 @@ export async function markDeleting(jobId: string) {
 export async function deleteJobBlob(jobId: string) {
   "use step";
   const job = await getJob(jobId);
+  if (job?.blobUrl && isLocalAudioUrl(job.blobUrl)) {
+    await deleteLocalAudio(job.blobUrl);
+    return;
+  }
   const token = getServerEnv().BLOB_READ_WRITE_TOKEN;
   if (job?.blobUrl && token) await del(job.blobUrl, { token });
 }

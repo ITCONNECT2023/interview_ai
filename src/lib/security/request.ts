@@ -22,6 +22,8 @@ export function apiError(error: unknown, requestId = crypto.randomUUID()) {
     INVALID_ORIGIN: { status: 403, message: "허용되지 않은 요청 출처입니다.", retryable: false },
     VERSION_CONFLICT: { status: 409, message: "다른 변경이 먼저 저장되었습니다. 최신본을 확인해 주세요.", retryable: true },
     EVIDENCE_INVALID: { status: 422, message: "전사 근거 연결을 확인해 주세요.", retryable: false },
+    FILE_INVALID: { status: 400, message: "지원하지 않거나 손상된 음성 파일입니다.", retryable: false },
+    RATE_LIMITED: { status: 429, message: "요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.", retryable: true },
     CONFIGURATION_ERROR: { status: 503, message: "서버 연동 설정이 필요합니다.", retryable: false },
   };
   const detail = map[code] ?? { status: 500, message: "요청을 처리하지 못했습니다.", retryable: true };

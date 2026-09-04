@@ -1,20 +1,25 @@
 import "server-only";
 import { z } from "zod";
 
+const emptyToUndefined = (value: unknown) => typeof value === "string" && value.trim() === "" ? undefined : value;
+const optionalString = z.preprocess(emptyToUndefined, z.string().min(1).optional());
+const optionalUrl = z.preprocess(emptyToUndefined, z.string().url().optional());
+const optionalSecret = z.preprocess(emptyToUndefined, z.string().min(16).optional());
+
 const schema = z.object({
-  GEMINI_API_KEY: z.string().min(1).optional(),
-  GEMINI_MODEL: z.literal("gemini-3.8-flash").default("gemini-3.8-flash"),
-  DATABASE_URL: z.string().url().optional(),
-  BLOB_READ_WRITE_TOKEN: z.string().min(1).optional(),
-  AUTH_SECRET: z.string().min(16).optional(),
-  AUTH_GOOGLE_ID: z.string().min(1).optional(),
-  AUTH_GOOGLE_SECRET: z.string().min(1).optional(),
-  ALLOWED_EMAIL_DOMAIN: z.string().min(1).optional(),
-  UPSTASH_REDIS_REST_URL: z.string().url().optional(),
-  UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
-  CMS_API_BASE_URL: z.string().url().optional(),
-  CMS_API_TOKEN: z.string().min(1).optional(),
-  CRON_SECRET: z.string().min(16).optional(),
+  GEMINI_API_KEY: optionalString,
+  GEMINI_MODEL: z.preprocess(emptyToUndefined, z.literal("gemini-3.8-flash").default("gemini-3.8-flash")),
+  DATABASE_URL: optionalUrl,
+  BLOB_READ_WRITE_TOKEN: optionalString,
+  AUTH_SECRET: optionalSecret,
+  AUTH_GOOGLE_ID: optionalString,
+  AUTH_GOOGLE_SECRET: optionalString,
+  ALLOWED_EMAIL_DOMAIN: optionalString,
+  UPSTASH_REDIS_REST_URL: optionalUrl,
+  UPSTASH_REDIS_REST_TOKEN: optionalString,
+  CMS_API_BASE_URL: optionalUrl,
+  CMS_API_TOKEN: optionalString,
+  CRON_SECRET: optionalSecret,
   DATA_RETENTION_DAYS: z.coerce.number().int().positive().default(30),
   MAX_AUDIO_DURATION_SECONDS: z.coerce.number().int().positive().default(600),
   MAX_AUDIO_BYTES: z.coerce.number().int().positive().default(104_857_600),

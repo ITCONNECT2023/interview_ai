@@ -10,7 +10,7 @@ copy .env.example .env.local
 npm run dev
 ```
 
-로컬에서 Google 인증 변수가 없으면 개발 전용 기자 계정을 사용합니다. Production에서는 인증·Gemini·Neon·Private Blob·Upstash·Cron 환경변수가 모두 필요합니다.
+로컬에서는 Vercel 계정이 필요하지 않습니다. Google 인증 변수가 없으면 개발 전용 기자 계정을 사용하고, 업로드 파일은 `.local-data/audio`에 저장합니다. 실제 전사에는 `GEMINI_API_KEY`만 설정하면 됩니다. Production에서는 인증·Gemini·Neon·Private Blob·Upstash·Cron 환경변수가 모두 필요합니다.
 
 ## 데이터베이스
 
