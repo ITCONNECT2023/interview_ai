@@ -1,0 +1,15 @@
+.next/
+node_modules/
+.env*
+!.env.example
+coverage/
+playwright-report/
+test-results/
+*.log
+.vercel/
+
+/.swc
+.pnpm-store/
+sample/*.mp3
+sample/*.m4a
+sample/*.wav

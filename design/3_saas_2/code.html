@@ -1,0 +1,417 @@
+<!DOCTYPE html><html lang="ko"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;family=Noto+Sans+KR:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-surface-variant": "#45474c",
+            "secondary": "#0051d5",
+            "surface-variant": "#d3e4fe",
+            "surface-container-lowest": "#ffffff",
+            "on-background": "#0b1c30",
+            "on-secondary-container": "#fefcff",
+            "secondary-container": "#316bf3",
+            "on-surface": "#0b1c30",
+            "background": "#f8f9ff",
+            "surface-container-highest": "#d3e4fe",
+            "surface-container-high": "#dce9ff",
+            "surface-container": "#e5eeff",
+            "surface-container-low": "#eff4ff",
+            "surface": "#f8f9ff",
+            "primary": "#091426",
+            "outline": "#75777d",
+            "outline-variant": "#c5c6cd",
+            "flag-amber": "#d97706",
+            "flag-amber-surface": "#fffbeb",
+            "flag-amber-border": "#fde68a"
+          },
+          fontFamily: {
+            sans: ["Noto Sans KR", "sans-serif"],
+            mono: ["JetBrains Mono", "monospace"]
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    @layer base {
+      html, body {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+      body {
+        overscroll-behavior-y: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .pb-safe { padding-bottom: max(env(safe-area-inset-bottom, 16px), 16px); }
+      .pt-safe { padding-top: max(env(safe-area-inset-top, 20px), 20px); }
+    }
+    ::-webkit-scrollbar { display: none; }
+    [contenteditable]:focus { outline: none; }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased flex flex-col min-h-screen selection:bg-surface-variant selection:text-secondary">
+<!-- Fixed Top Header -->
+<header class="fixed top-0 inset-x-0 z-50 bg-surface-container-lowest/90 backdrop-blur-md border-b border-slate-200/80 pt-safe transition-all"><div class="px-4 py-2.5 flex items-center justify-between gap-2">
+  <div class="flex items-center gap-2 min-w-0 flex-1">
+    <button aria-label="뒤로 가기" class="w-9 h-9 -ml-1 flex items-center justify-center rounded-xl text-on-surface active:bg-surface-container-high transition-colors shrink-0" onclick="history.back()">
+      <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+    </button>
+    <div class="flex flex-col min-w-0 flex-1">
+      <div class="flex items-center gap-1 text-[11px] text-on-surface-variant font-medium truncate">
+        <span class="truncate">취재지원실</span>
+        <span class="material-symbols-outlined text-[11px] text-outline shrink-0">chevron_right</span>
+        <span class="text-secondary font-semibold shrink-0">Step 3</span>
+      </div>
+      <h1 class="text-[15px] font-bold text-on-surface truncate leading-snug tracking-tight">텍스트 검증</h1>
+    </div>
+  </div>
+  <div class="flex items-center gap-1 shrink-0">
+    <button aria-label="작업 저장" class="w-9 h-9 flex items-center justify-center rounded-xl text-on-surface-variant active:bg-surface-container-high transition-colors">
+      <span class="material-symbols-outlined text-[20px]">bookmark_border</span>
+    </button>
+    <div class="w-7 h-7 rounded-full bg-primary flex items-center justify-center text-white text-xs font-semibold shadow-sm ml-0.5">
+      강
+    </div>
+  </div>
+</div>
+<div class="px-4 pb-2 flex items-center justify-between text-xs border-t border-slate-100/80 pt-1.5 gap-2">
+  <div class="flex items-center gap-1.5 text-on-surface-variant text-[11px] font-mono overflow-x-auto no-scrollbar shrink min-w-0">
+    <span class="text-slate-400 shrink-0">1.업로드</span>
+    <span class="text-slate-300 shrink-0">›</span>
+    <span class="text-slate-400 shrink-0">2.화자분리</span>
+    <span class="text-slate-300 shrink-0">›</span>
+    <span class="text-secondary font-semibold bg-surface-container-high px-1.5 py-0.5 rounded shrink-0">3.텍스트검증</span>
+    <span class="text-slate-300 shrink-0">›</span>
+    <span class="text-slate-400 shrink-0">4.초안</span>
+  </div>
+  <span class="text-[10px] font-semibold text-secondary px-2 py-0.5 bg-blue-50 border border-blue-200/60 rounded-full shrink-0">STAGE 3</span>
+</div></header>
+<!-- Main Content Space -->
+<main class="flex-1 w-full max-w-md mx-auto pt-[104px] pb-36 px-4 space-y-3.5">
+<!-- Streamlined Sticky Audio Player Bar -->
+<section class="sticky top-[96px] z-40 bg-surface-container-lowest/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-sm p-3 space-y-2.5">
+<div class="flex items-center justify-between gap-2">
+<div class="flex items-center gap-1.5 min-w-0">
+<div class="w-2 h-2 rounded-full bg-secondary animate-pulse shrink-0"></div>
+<span class="font-mono text-xs font-semibold text-on-surface tracking-wide truncate">REC-01 白브리핑</span>
+</div>
+<div class="flex items-center gap-1 font-mono text-xs text-on-surface-variant shrink-0">
+<span class="text-secondary font-bold" id="current-time">02:18</span>
+<span class="text-slate-300">/</span>
+<span class="">08:42</span>
+</div>
+</div>
+<!-- Waveform scrubber -->
+<div class="relative w-full h-10 bg-surface-container-low rounded-xl overflow-hidden flex items-center px-2 cursor-pointer" id="waveform-container">
+<div class="absolute left-[38%] w-[18%] h-full bg-amber-400/20 pointer-events-none rounded-sm"></div>
+<svg class="w-full h-6" fill="none" preserveAspectRatio="none" viewBox="0 0 280 28">
+<g fill="#0051d5">
+<rect height="12" rx="1.5" width="3" x="0" y="8"></rect>
+<rect height="16" rx="1.5" width="3" x="6" y="6"></rect>
+<rect height="8" rx="1.5" width="3" x="12" y="10"></rect>
+<rect height="24" rx="1.5" width="3" x="18" y="2"></rect>
+<rect height="18" rx="1.5" width="3" x="24" y="5"></rect>
+<rect height="10" rx="1.5" width="3" x="30" y="9"></rect>
+<rect height="22" rx="1.5" width="3" x="36" y="3"></rect>
+<rect height="14" rx="1.5" width="3" x="42" y="7"></rect>
+<rect height="20" rx="1.5" width="3" x="48" y="4"></rect>
+<rect height="8" rx="1.5" width="3" x="54" y="10"></rect>
+<rect height="18" rx="1.5" width="3" x="60" y="5"></rect>
+<rect height="24" rx="1.5" width="3" x="66" y="2"></rect>
+<rect height="14" rx="1.5" width="3" x="72" y="7"></rect>
+<rect height="6" rx="1.5" width="3" x="78" y="11"></rect>
+<rect height="22" rx="1.5" width="3" x="84" y="3"></rect>
+<rect height="16" rx="1.5" width="3" x="90" y="6"></rect>
+<rect height="12" rx="1.5" width="3" x="96" y="8"></rect>
+</g>
+<g fill="#d97706">
+<rect height="22" rx="1.5" width="3" x="102" y="3"></rect>
+<rect height="26" rx="1.5" width="3" x="108" y="1"></rect>
+<rect height="16" rx="1.5" width="3" x="114" y="6"></rect>
+<rect height="12" rx="1.5" width="3" x="120" y="8"></rect>
+<rect height="22" rx="1.5" width="3" x="126" y="3"></rect>
+<rect height="8" rx="1.5" width="3" x="132" y="10"></rect>
+</g>
+<g fill="#cbd5e1">
+<rect height="16" rx="1.5" width="3" x="138" y="6"></rect>
+<rect height="8" rx="1.5" width="3" x="144" y="10"></rect>
+<rect height="24" rx="1.5" width="3" x="150" y="2"></rect>
+<rect height="18" rx="1.5" width="3" x="156" y="5"></rect>
+<rect height="10" rx="1.5" width="3" x="162" y="9"></rect>
+<rect height="14" rx="1.5" width="3" x="168" y="7"></rect>
+<rect height="4" rx="1.5" width="3" x="174" y="12"></rect>
+<rect height="22" rx="1.5" width="3" x="180" y="3"></rect>
+<rect height="18" rx="1.5" width="3" x="186" y="5"></rect>
+<rect height="12" rx="1.5" width="3" x="192" y="8"></rect>
+<rect height="16" rx="1.5" width="3" x="198" y="6"></rect>
+<rect height="6" rx="1.5" width="3" x="204" y="11"></rect>
+<rect height="20" rx="1.5" width="3" x="210" y="4"></rect>
+<rect height="24" rx="1.5" width="3" x="216" y="2"></rect>
+<rect height="10" rx="1.5" width="3" x="222" y="9"></rect>
+<rect height="14" rx="1.5" width="3" x="228" y="7"></rect>
+<rect height="4" rx="1.5" width="3" x="234" y="12"></rect>
+<rect height="20" rx="1.5" width="3" x="240" y="4"></rect>
+<rect height="12" rx="1.5" width="3" x="246" y="8"></rect>
+<rect height="26" rx="1.5" width="3" x="252" y="1"></rect>
+<rect height="14" rx="1.5" width="3" x="258" y="7"></rect>
+<rect height="8" rx="1.5" width="3" x="264" y="10"></rect>
+<rect height="18" rx="1.5" width="3" x="270" y="5"></rect>
+<rect height="6" rx="1.5" width="3" x="276" y="11"></rect>
+</g>
+</svg>
+<div class="absolute left-[47%] top-0 bottom-0 w-0.5 bg-secondary flex items-center justify-center pointer-events-none">
+<div class="w-3 h-3 rounded-full bg-secondary ring-2 ring-white shadow-sm"></div>
+</div>
+</div>
+<!-- Essential Controls: Play/Pause, Replay 5s, Loop 3s, Speed -->
+<div class="flex items-center justify-between gap-1 pt-0.5">
+<div class="flex items-center gap-1.5 shrink-0">
+<button aria-label="재생 토글" class="h-9 px-3 rounded-xl bg-primary text-white flex items-center gap-1.5 font-medium text-xs active:scale-95 transition-transform shadow-sm shrink-0" id="play-pause-btn">
+<span class="material-symbols-outlined text-[18px]" id="play-icon" style="font-variation-settings: 'FILL' 1;">pause</span>
+<span id="play-label" class="">일시정지</span>
+</button>
+<button aria-label="5초 전으로" class="w-9 h-9 rounded-xl bg-surface-container-low text-on-surface hover:bg-surface-container flex items-center justify-center active:scale-95 transition-transform shrink-0">
+<span class="material-symbols-outlined text-[18px]">replay_5</span>
+</button>
+<button aria-label="3초 루프" class="h-9 px-2.5 rounded-xl bg-blue-50 text-secondary border border-blue-200/60 flex items-center gap-1 text-[11px] font-semibold active:bg-blue-100 transition-colors shrink-0" id="loop-btn">
+<span class="material-symbols-outlined text-[15px]">repeat</span>
+<span class="">3s 반복</span>
+</button>
+</div>
+<div class="flex items-center bg-slate-100 rounded-lg p-0.5 text-[11px] font-mono shrink-0">
+<button class="px-1.5 py-0.5 rounded text-on-surface-variant font-medium">0.8x</button>
+<button class="px-1.5 py-0.5 rounded bg-white text-secondary font-bold shadow-xs">1.0x</button>
+<button class="px-1.5 py-0.5 rounded text-on-surface-variant font-medium">1.2x</button>
+</div>
+</div>
+</section>
+<!-- Segment List Header / Diagnostic Meta -->
+<div class="flex items-center justify-between px-1 text-xs text-on-surface-variant">
+<div class="flex items-center gap-1.5 truncate">
+<span class="material-symbols-outlined text-[16px] text-slate-500 shrink-0">format_list_bulleted</span>
+<span class="font-medium text-slate-700 truncate">전체 18개 발화 구간</span>
+</div>
+<div class="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 font-medium shrink-0 text-[11px]">
+<span class="material-symbols-outlined text-[13px] text-amber-600 shrink-0" style="font-variation-settings: 'FILL' 1;">error</span>
+<span class="truncate">확인 필요 2건</span>
+</div>
+</div>
+<!-- Segment Cards List -->
+<div class="flex flex-col gap-3.5">
+<!-- SEG-001: Reporter Normal Card -->
+<article class="bg-surface-container-lowest rounded-2xl p-3.5 border border-slate-200/80 shadow-xs space-y-2.5">
+<div class="flex items-center justify-between gap-2">
+<div class="flex items-center gap-1.5 truncate">
+<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-mono text-[11px] font-semibold shrink-0">화자 1</span>
+<span class="text-xs font-semibold text-slate-800 truncate">강도훈 기자</span>
+</div>
+<div class="flex items-center gap-1.5 shrink-0">
+<span class="font-mono text-[11px] text-slate-400">00:02 ~ 00:44</span>
+<button class="w-7 h-7 rounded-lg bg-slate-50 text-slate-600 hover:bg-slate-100 flex items-center justify-center transition-colors shrink-0" title="이 구간 재생">
+<span class="material-symbols-outlined text-[16px]">play_arrow</span>
+</button>
+</div>
+</div>
+<p class="text-[14px] leading-relaxed text-slate-700 font-normal">
+  네, 오늘 발표된 수도권 광역 교통망 확충 계획과 관련해 주요 거점별 세부 실행 로드맵 및 재원 조달 방안에 대해 국토교통부 측 입장을 묻고자 합니다. 특히 민간 자본 유치 비율에 관한 논란이 있습니다.
+</p>
+<div class="pt-1 flex items-center justify-between border-t border-slate-100 text-xs gap-2">
+<span class="inline-flex items-center gap-1 text-slate-500 font-medium text-[11px] shrink-0">
+<span class="material-symbols-outlined text-[13px] text-emerald-600 shrink-0">check_circle</span>
+  화자 일치 인증
+</span>
+<div class="flex items-center gap-1 shrink-0">
+<button class="px-2 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-[11px] transition-colors flex items-center gap-0.5 shrink-0">
+<span class="material-symbols-outlined text-[13px]">format_quote</span>
+  인용구
+</button>
+<button class="px-2 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-[11px] transition-colors flex items-center gap-0.5 shrink-0">
+<span class="material-symbols-outlined text-[13px]">fact_check</span>
+  검증
+</button>
+</div>
+</div>
+</article>
+<!-- SEG-002: Active Editing Segment -->
+<article class="bg-surface-container-lowest rounded-2xl p-3.5 border-2 border-secondary/70 shadow-md space-y-3 relative">
+<div class="flex items-center justify-between gap-2">
+<div class="flex items-center gap-1.5 truncate">
+<span class="px-2 py-0.5 rounded bg-secondary text-white font-mono text-[11px] font-semibold shrink-0">화자 2</span>
+<span class="text-xs font-bold text-slate-900 truncate">국토교통부 대변인</span>
+</div>
+<div class="flex items-center gap-1.5 shrink-0">
+<span class="font-mono text-[11px] font-semibold text-secondary">01:45 ~ 02:24</span>
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-blue-50 text-secondary text-[10px] font-semibold shrink-0">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+  재생 중
+</span>
+</div>
+</div>
+<!-- Soft Amber Alert -->
+<div class="bg-amber-50/90 border border-amber-200/90 rounded-xl p-2.5 space-y-1.5">
+<div class="flex items-start gap-1.5">
+<span class="material-symbols-outlined text-amber-600 text-[16px] shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">warning</span>
+<div class="flex flex-col min-w-0 flex-1">
+<div class="flex items-center justify-between gap-1">
+<span class="text-xs font-bold text-amber-900 truncate">[02:12 확인] 청취 불명확 구간</span>
+<span class="font-mono text-[11px] text-amber-700 font-medium shrink-0">신뢰도 42%</span>
+</div>
+<p class="text-[11px] text-amber-800/90 mt-0.5 leading-snug">
+  주변 소음 간섭으로 오인식 가능성 높음 (AI: <span class="line-through text-amber-900/60 font-medium">용적률 만화</span>)
+</p>
+</div>
+</div>
+<div class="flex items-center gap-1.5 pt-1 border-t border-amber-200/60">
+<button class="px-2 py-1 rounded bg-white border border-amber-300 text-amber-900 text-[11px] font-medium flex items-center gap-1 shadow-xs active:bg-amber-100 shrink-0">
+<span class="material-symbols-outlined text-[13px] text-amber-700">replay</span>
+  3초 반복 청취
+</button>
+<button class="px-2 py-1 rounded bg-white border border-slate-200 text-slate-600 text-[11px] font-medium flex items-center gap-1 shadow-xs active:bg-slate-50 shrink-0">
+<span class="material-symbols-outlined text-[13px]">undo</span>
+  초안 복원
+</button>
+</div>
+</div>
+<!-- Inline Live Text Editor Box -->
+<div class="space-y-1.5">
+<div class="flex items-center justify-between text-xs text-slate-500">
+<span class="font-medium text-secondary flex items-center gap-1 text-[11px]">
+<span class="material-symbols-outlined text-[13px]">edit_note</span>
+  터치하여 직접 수정
+</span>
+<span class="font-mono text-[11px] text-emerald-600 font-medium flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[12px]">check</span>
+  실시간 반영
+</span>
+</div>
+<div class="bg-slate-50/80 border border-slate-200 rounded-xl p-3 focus-within:border-secondary focus-within:bg-white focus-within:ring-2 focus-within:ring-secondary/10 transition-all">
+<div aria-multiline="true" class="text-[14px] leading-relaxed text-slate-800 font-normal outline-none min-h-[64px]" id="editable-transcript" role="textbox">정부의 기본 방침은 확고합니다. 민자 사업자의 과도한 수익성을 제한하는 대신 역세권 복합개발의 <mark class="bg-blue-100 text-secondary font-semibold px-1.5 py-0.5 rounded border border-blue-200">용적률 완화</mark>를 인센티브로 제공해 공공성을 확보하는 안을 최종 검토 중입니다.</div>
+<div class="flex items-center justify-between text-[11px] text-slate-400 pt-1.5 border-t border-slate-200/60 mt-2 font-mono">
+<span class="truncate">수정: '용적률 완화'</span>
+<span class="shrink-0">128자</span>
+</div>
+</div>
+</div>
+<!-- Context Editorial Buttons -->
+<div class="grid grid-cols-2 gap-2 pt-0.5">
+<button class="py-2 px-2.5 rounded-xl bg-primary text-white text-xs font-semibold flex items-center justify-center gap-1 active:opacity-90 transition-opacity truncate">
+<span class="material-symbols-outlined text-[15px] shrink-0" style="font-variation-settings: 'FILL' 1;">format_quote</span>
+<span class="truncate">핵심 인용구 등록</span>
+</button>
+<button class="py-2 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold flex items-center justify-center gap-1 transition-colors truncate">
+<span class="material-symbols-outlined text-[15px] text-secondary shrink-0">send</span>
+<span class="truncate">팩트체크 전송</span>
+</button>
+</div>
+</article>
+<!-- SEG-004: Fact-Check Alert -->
+<article class="bg-surface-container-lowest rounded-2xl p-3.5 border border-slate-200/80 shadow-xs space-y-2.5">
+<div class="flex items-center justify-between gap-2">
+<div class="flex items-center gap-1.5 truncate">
+<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-mono text-[11px] font-semibold shrink-0">화자 2</span>
+<span class="text-xs font-semibold text-slate-800 truncate">국토교통부 대변인</span>
+</div>
+<span class="font-mono text-[11px] text-slate-400 shrink-0">03:11 ~ 04:02</span>
+</div>
+<!-- Numeric Alert Badge -->
+<div class="flex items-center gap-1.5 bg-blue-50/70 border border-blue-200/70 px-2.5 py-1.5 rounded-xl text-xs">
+<span class="material-symbols-outlined text-secondary text-[15px] shrink-0">payments</span>
+<span class="font-semibold text-slate-800 shrink-0">수치:</span>
+<span class="text-secondary font-medium truncate text-[11px]">3조 4천억 vs 3조 8천억 (대조 요망)</span>
+</div>
+<p class="text-[14px] leading-relaxed text-slate-700 font-normal">
+  총 사업비는 1차 추산치인 <span class="bg-slate-100 text-slate-900 font-semibold px-1.5 py-0.5 rounded border border-slate-200">3조 8천억 원</span> 규모로 산정되었으며, 지자체 분담금 조율이 완료되는 즉시 기재부 예비타당성 면제 신청을 접수할 예정입니다.
+</p>
+<div class="pt-1 flex items-center justify-between border-t border-slate-100 text-xs gap-2">
+<button class="text-secondary font-medium flex items-center gap-1 hover:underline text-[11px] shrink-0">
+<span class="material-symbols-outlined text-[14px]">play_circle</span>
+  음성 청취
+</button>
+<button class="px-2 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-[11px] transition-colors shrink-0">
+  팩트체크 보류
+</button>
+</div>
+</article>
+<!-- Journalist Memo / Reference Metadata Card -->
+<section class="bg-slate-50/80 border border-slate-200 rounded-2xl p-3.5 space-y-1.5">
+<div class="flex items-center justify-between text-xs font-semibold text-slate-700">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-slate-500">edit_note</span>
+  취재 메모 &amp; 메타데이터
+</span>
+<span class="font-mono text-[11px] text-slate-400">CH-01</span>
+</div>
+<p class="text-[11px] text-slate-600 leading-relaxed">
+  • 본 인터뷰는 백브리핑 녹취록 원본 기반이며 잡음 억제 필터가 적용되었습니다.<br>
+  • 국토부 2차 배포 보도자료(14:00 배포)와 수치 대조 작업 진행 중.
+</p>
+</section>
+</div>
+</main>
+<!-- Fixed Bottom Decision / Action Bar with Generous Touch Targets -->
+<aside class="fixed bottom-0 inset-x-0 z-50 bg-surface-container-lowest/95 backdrop-blur-xl border-t border-slate-200/80 pb-safe pt-3 px-4 shadow-[0_-4px_16px_rgba(0,0,0,0.06)]">
+<div class="max-w-md mx-auto flex items-center justify-between gap-3">
+<!-- Auto Save State -->
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]">cloud_done</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="text-xs font-bold text-slate-800 truncate">자동 동기화 완료</span>
+<span class="font-mono text-[11px] text-slate-400 truncate">14:32 저장됨</span>
+</div>
+</div>
+<!-- Prominent Primary Action Button -->
+<button class="h-12 px-5 rounded-xl bg-primary hover:bg-slate-800 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-all shrink-0">
+<span class="">초안 단계로 이동</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</aside>
+<!-- Essential Micro-interactions script -->
+<script>
+    (function initSaaSInteraction() {
+      const playBtn = document.getElementById('play-pause-btn');
+      const playIcon = document.getElementById('play-icon');
+      const playLabel = document.getElementById('play-label');
+      let isPlaying = true;
+
+      if (playBtn && playIcon && playLabel) {
+        playBtn.addEventListener('click', () => {
+          isPlaying = !isPlaying;
+          playIcon.textContent = isPlaying ? 'pause' : 'play_arrow';
+          playLabel.textContent = isPlaying ? '일시정지' : '재생하기';
+          if (!isPlaying) {
+            playBtn.classList.replace('bg-primary', 'bg-secondary');
+          } else {
+            playBtn.classList.replace('bg-secondary', 'bg-primary');
+          }
+        });
+      }
+
+      const loopBtn = document.getElementById('loop-btn');
+      if (loopBtn) {
+        loopBtn.addEventListener('click', () => {
+          const prev = loopBtn.innerHTML;
+          loopBtn.innerHTML = '<span class="material-symbols-outlined text-[15px] animate-spin text-secondary">sync</span><span>3s 재생 중...</span>';
+          setTimeout(() => {
+            loopBtn.innerHTML = prev;
+          }, 3000);
+        });
+      }
+    })();
+  </script>
+
+
+</body></html>

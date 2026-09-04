@@ -1,0 +1,746 @@
+<!DOCTYPE html><html lang="ko"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<!-- Noto Sans KR 전면 적용 + JetBrains Mono for codes/timestamps -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<style>
+    body {
+      font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+      overscroll-behavior: none;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#091426",
+            "primary-container": "#1e293b",
+            "on-primary": "#ffffff",
+            "secondary": "#0051d5",
+            "secondary-container": "#316bf3",
+            "secondary-light": "#eff4ff",
+            "on-surface": "#0b1c30",
+            "on-surface-variant": "#475569",
+            "surface-muted": "#64748b",
+            "surface": "#f8fafd",
+            "surface-card": "#ffffff",
+            "slate-border": "#e2e8f0",
+            "slate-border-strong": "#cbd5e1",
+            "error": "#ba1a1a",
+            "error-bg": "#fff1f2",
+            "warning": "#d97706",
+            "warning-bg": "#fffbeb",
+            "success": "#059669",
+            "success-bg": "#ecfdf5"
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col">
+<!-- TOP NAVIGATION / BRAND HEADER -->
+<header class="sticky top-0 z-40 w-full h-15 bg-surface-card/95 backdrop-blur border-b border-slate-border px-6 flex items-center justify-between shadow-[0_1px_3px_rgba(0,0,0,0.02)] whitespace-nowrap">
+<div class="flex items-center gap-6 shrink-0">
+<!-- Logo -->
+<div class="flex items-center gap-2.5 shrink-0">
+<div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white shadow-sm">
+<span class="material-symbols-outlined text-[19px]">newspaper</span>
+</div>
+<div class="flex flex-col">
+<span class="font-bold text-sm text-primary tracking-tight leading-none">PressNote</span>
+<span class="text-[11px] text-on-surface-variant font-medium mt-0.5">취재지원실 · 데스크 에디션</span>
+</div>
+</div>
+<!-- File Meta Indicator -->
+<div class="hidden lg:flex items-center gap-3 px-3 py-1.5 bg-slate-50 border border-slate-border rounded-lg text-xs shrink-0">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-on-surface-variant font-medium">FILE:</span>
+<span class="font-mono font-semibold text-primary">PR-202410-088</span>
+</div>
+<span class="text-slate-300">|</span>
+<div class="flex items-center gap-1.5">
+<span class="text-on-surface-variant font-medium">원문:</span>
+<span class="text-on-surface font-medium truncate max-w-[180px]">국토부_출입기자단_백브리핑.mp3</span>
+</div>
+<span class="text-slate-300">|</span>
+<div class="flex items-center gap-1">
+<span class="text-on-surface-variant font-medium">길이:</span>
+<span class="font-mono font-medium text-on-surface">48:22</span>
+</div>
+</div>
+</div>
+<!-- Stepper Navigation (1 to 4) -->
+<nav class="hidden md:flex items-center gap-1 text-xs font-medium shrink-0">
+<a class="px-2.5 py-1.5 rounded-md text-on-surface-variant hover:text-primary hover:bg-slate-100 transition-colors whitespace-nowrap" href="#">1. 파일 업로드</a>
+<span class="text-slate-300 material-symbols-outlined text-[14px]">chevron_right</span>
+<a class="px-2.5 py-1.5 rounded-md text-on-surface-variant hover:text-primary hover:bg-slate-100 transition-colors whitespace-nowrap" href="#">2. 전사·분석</a>
+<span class="text-slate-300 material-symbols-outlined text-[14px]">chevron_right</span>
+<a class="px-2.5 py-1.5 rounded-md text-on-surface-variant hover:text-primary hover:bg-slate-100 transition-colors whitespace-nowrap" href="#">3. 전사 검토</a>
+<span class="text-slate-300 material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="px-2.5 py-1.5 rounded-md bg-primary text-white font-semibold flex items-center gap-1.5 shadow-sm whitespace-nowrap">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+        4. 기사 구성 및 초안
+      </span>
+</nav>
+<!-- User & Status -->
+<div class="flex items-center gap-3 shrink-0 whitespace-nowrap">
+<div class="hidden sm:flex items-center gap-2 px-2.5 py-1 text-xs text-on-surface-variant bg-slate-50 border border-slate-border rounded-lg shrink-0">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span class="font-semibold text-primary">강도훈 기자</span>
+<span class="text-slate-400 font-normal">정치2부</span>
+</div>
+<button class="w-8 h-8 rounded-full bg-slate-100 border border-slate-border flex items-center justify-center text-primary hover:bg-slate-200 transition-colors shrink-0" title="내 프로필">
+<span class="material-symbols-outlined text-[18px]">person</span>
+</button>
+</div>
+</header>
+<!-- ACTION SUBHEADER / WORKSPACE TOOLBAR -->
+<div class="w-full bg-white border-b border-slate-border px-8 py-3.5">
+<div class="max-w-[1680px] mx-auto flex flex-wrap items-center justify-between gap-4">
+<div class="flex items-center gap-3.5 min-w-0">
+<div class="w-9 h-9 rounded-lg bg-blue-50 text-secondary border border-blue-100 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[20px]">edit_document</span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-2 flex-wrap">
+<h1 class="text-lg font-bold text-primary tracking-tight whitespace-nowrap">기사 초안 &amp; 취재원 대조 워크스페이스</h1>
+<span class="bg-blue-50 text-secondary text-[11px] font-semibold px-2 py-0.5 rounded border border-blue-200 whitespace-nowrap">실시간 연동 모드</span>
+</div>
+<p class="text-xs text-on-surface-variant mt-0.5 whitespace-nowrap">음성 원문 전사(#PR-202410-088)와 추출된 팩트를 토대로 한 1:1 교차 검증 데스크</p>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-2.5 shrink-0 whitespace-nowrap">
+<a class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-on-surface-variant bg-white border border-slate-border rounded-lg hover:bg-slate-50 transition-colors shrink-0" href="#">
+<span class="material-symbols-outlined text-[16px] text-slate-500">replay</span>
+<span class="whitespace-nowrap">원문 전사 다시보기</span>
+</a>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-primary bg-white border border-slate-border rounded-lg hover:bg-slate-50 transition-colors shrink-0" id="btnCopyDraft">
+<span class="material-symbols-outlined text-[16px] text-slate-500">content_copy</span>
+<span class="whitespace-nowrap">초안 전체 복사</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold text-white bg-secondary hover:bg-blue-700 rounded-lg shadow-sm transition-colors shrink-0">
+<span class="material-symbols-outlined text-[16px]">send</span>
+<span class="whitespace-nowrap">CMS 데스크 송고</span>
+</button>
+</div>
+</div>
+</div>
+<!-- MAIN DUAL-COLUMN WORKSPACE -->
+<main class="flex-1 w-full px-8 py-7">
+<div class="max-w-[1680px] mx-auto grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
+<!-- ========================================== -->
+<!-- LEFT COLUMN: MAIN ARTICLE DRAFT CANVAS (7 Cols) -->
+<!-- ========================================== -->
+<div class="xl:col-span-7 flex flex-col gap-6">
+<!-- 1. Editorial Guidance Banner -->
+<div class="bg-amber-50/70 border border-amber-200/80 rounded-xl p-4 flex items-start gap-3.5 text-xs leading-relaxed text-amber-950">
+<span class="material-symbols-outlined text-amber-600 text-[20px] shrink-0 mt-0.5">verified</span>
+<div>
+<div class="font-semibold text-amber-900 mb-0.5">전사 기반 자동 구조화 완료 (데스크 검증 요망)</div>
+<p class="text-amber-800 font-normal">
+              본 초안은 실제 백브리핑 음성 전사 데이터를 기반으로 단락별 맥락을 재구성했습니다. 각 단락의 인용구와 수치는 우측 추출 취재원 데이터와 1:1 매칭 검증 후 송고하시기 바랍니다.
+            </p>
+</div>
+</div>
+<!-- 2. Lead Variation Selector (Spacious Radio Cards) -->
+<section class="bg-surface-card border border-slate-border rounded-xl p-6 shadow-sm">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">auto_fix_high</span>
+<h2 class="text-base font-bold text-primary">도입부(Lead) 제안안 선택</h2>
+</div>
+<span class="text-xs text-on-surface-variant font-normal">선택 시 기사 1단락에 실시간 반영됩니다</span>
+</div>
+<div class="space-y-3" id="leadSelectorContainer">
+<!-- Lead 1: 사실형 (Default Selected) -->
+<label class="group relative flex items-start gap-4 p-4 rounded-xl border border-blue-500/40 bg-blue-50/30 hover:border-blue-600 cursor-pointer transition-all">
+<input checked="" class="mt-1 w-4 h-4 text-secondary focus:ring-secondary border-slate-300 shrink-0" name="leadOption" type="radio" value="fact">
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-2 mb-1.5 flex-wrap sm:flex-nowrap">
+<div class="flex items-center gap-2 whitespace-nowrap shrink-0">
+<span class="text-xs font-bold text-secondary">1안 · 사실형 리드</span>
+<span class="text-[11px] font-semibold px-2 py-0.5 bg-secondary text-white rounded-full">권장</span>
+</div>
+<span class="font-mono text-[11px] text-slate-500 bg-white px-2 py-0.5 border border-slate-200 rounded whitespace-nowrap shrink-0">근거 전사: #SEG-002, #SEG-004</span>
+</div>
+<p class="text-sm text-slate-800 leading-relaxed font-normal">
+                  “○○부는 18일 정부세종청사에서 열린 비공개 브리핑을 통해 신규 규제 개편안의 연내 도입을 추진하되 세부 보완책은 관계부처 협의를 거치겠다고 밝혔다.”
+                </p>
+</div>
+</label>
+<!-- Lead 2: 인용형 -->
+<label class="group relative flex items-start gap-4 p-4 rounded-xl border border-slate-border bg-white hover:border-slate-300 hover:bg-slate-50/50 cursor-pointer transition-all">
+<input class="mt-1 w-4 h-4 text-secondary focus:ring-secondary border-slate-300 shrink-0" name="leadOption" type="radio" value="quote">
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-2 mb-1.5 flex-wrap sm:flex-nowrap">
+<span class="text-xs font-bold text-slate-700 group-hover:text-secondary transition-colors whitespace-nowrap shrink-0">2안 · 인용형 리드</span>
+<span class="font-mono text-[11px] text-slate-500 bg-slate-50 px-2 py-0.5 border border-slate-200 rounded whitespace-nowrap shrink-0">근거 전사: #SEG-003</span>
+</div>
+<p class="text-sm text-slate-700 leading-relaxed font-normal">
+                  ““원칙적 추진에는 변함이 없으나 현장 수용성을 최우선으로 검토하겠다”는 ○○부 관계자의 발언은 당초 강경했던 규제 도입 속도 조절 가능성을 시사했다.”
+                </p>
+</div>
+</label>
+<!-- Lead 3: 이슈형 -->
+<label class="group relative flex items-start gap-4 p-4 rounded-xl border border-slate-border bg-white hover:border-slate-300 hover:bg-slate-50/50 cursor-pointer transition-all">
+<input class="mt-1 w-4 h-4 text-secondary focus:ring-secondary border-slate-300 shrink-0" name="leadOption" type="radio" value="issue">
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-2 mb-1.5 flex-wrap sm:flex-nowrap">
+<span class="text-xs font-bold text-slate-700 group-hover:text-secondary transition-colors whitespace-nowrap shrink-0">3안 · 이슈형 리드</span>
+<span class="font-mono text-[11px] text-slate-500 bg-slate-50 px-2 py-0.5 border border-slate-200 rounded whitespace-nowrap shrink-0">근거 전사: #SEG-005</span>
+</div>
+<p class="text-sm text-slate-700 leading-relaxed font-normal">
+                  “핵심 쟁점이었던 시행 시기를 두고 ○○부 측이 관계부처 협의 가능성을 열어두면서 입법 논의가 새 국면을 맞이하게 될 전망이다.”
+                </p>
+</div>
+</label>
+</div>
+</section>
+<!-- 3. Article Canvas & Paragraphs View -->
+<article class="bg-surface-card border border-slate-border rounded-xl shadow-sm overflow-hidden">
+<!-- Article Canvas Header -->
+<div class="px-7 py-4.5 bg-slate-50/70 border-b border-slate-border flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[22px]">article</span>
+<div>
+<h2 class="text-base font-bold text-primary">권장 기사 본문 초안</h2>
+<span class="text-xs text-on-surface-variant">정치·행정 표준 스트레이트 포맷</span>
+</div>
+</div>
+<div class="flex items-center gap-3 text-xs">
+<span class="text-on-surface-variant font-mono">분량: 200자 원고지 6.4매 (1,280자)</span>
+<span class="inline-flex items-center gap-1 font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                인용 교차대조 완료
+              </span>
+</div>
+</div>
+<!-- Paragraphs Section -->
+<div class="p-7 space-y-7">
+<!-- Paragraph 1 -->
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded bg-primary"></span>
+<span class="text-xs font-bold text-primary tracking-tight">1단락 : 정책 추진 배경 및 공식 발표</span>
+</div>
+<span class="text-[11px] text-slate-400">도입 리드</span>
+</div>
+<div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 text-[15px] leading-relaxed text-slate-800 font-normal" id="draftLeadParagraph">
+                ○○부는 18일 정부세종청사에서 열린 비공개 브리핑을 통해 신규 규제 개편안의 연내 도입을 추진하되 세부 보완책은 관계부처 협의를 거치겠다고 밝혔다. 정부 차원의 정책 추진 기조는 유지하지만, 이해관계자들의 반발과 부처 간 이견을 감안해 연착륙 방안을 다각도로 모색하겠다는 취지로 풀이된다.
+              </div>
+</div>
+<!-- Paragraph 2 (Core Direct Quote with Provenance & Audio Playback) -->
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded bg-secondary"></span>
+<span class="text-xs font-bold text-secondary tracking-tight">2단락 : 쟁점 발언 및 직접 인용문</span>
+</div>
+<span class="text-[11px] font-medium text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                  음성 원문 일치도 100%
+                </span>
+</div>
+<!-- Dedicated Quote Verification Box -->
+<div class="p-5 bg-blue-50/40 border border-blue-200 rounded-xl space-y-4">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary text-[26px] shrink-0 mt-0.5">format_quote</span>
+<blockquote class="text-[16px] font-medium text-slate-900 leading-relaxed italic">
+                    “시행 시기와 관련해서는 업계 및 관계부처의 의견을 수렴해 유연하게 조율할 여지가 열려 있습니다.”
+                  </blockquote>
+</div>
+<!-- Provenance Meta & 1-Click Audio Compare Bar -->
+<div class="pt-3 border-t border-blue-100 flex flex-wrap items-center justify-between gap-3">
+<div class="flex items-center gap-3">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-blue-200 rounded-md text-xs font-mono text-secondary font-semibold shadow-xs">
+<span class="material-symbols-outlined text-[15px]">link</span>
+                      원문 전사: #SEG-003 (02:15)
+                    </span>
+<span class="text-xs text-slate-600">
+                      발화자: <strong class="text-slate-800 font-semibold">화자 A (○○부 대변인)</strong>
+</span>
+</div>
+<!-- 1-Click Compare Button -->
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-secondary text-white text-xs font-semibold rounded-lg hover:bg-blue-700 shadow-sm transition-all active:scale-[0.98]" onclick="playAudioSnippet('02:15', '화자 A (대변인)', '시행 시기와 관련해서는 업계 및 관계부처의 의견을 수렴해...')">
+<span class="material-symbols-outlined text-[16px]">play_circle</span>
+<span class="">▶ 음성 대조 청취</span>
+</button>
+</div>
+</div>
+<div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 text-[15px] leading-relaxed text-slate-800 font-normal">
+                이날 브리핑에서 화자 A는 일방적인 법안 밀어붙이기가 아니냐는 지적에 대해 제도 연착륙을 위한 숙의 기간을 둘 수 있음을 거듭 강조하며 입법 속도 조절의 여지를 열어뒀다.
+              </div>
+</div>
+<!-- Paragraph 3 -->
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded bg-primary"></span>
+<span class="text-xs font-bold text-primary tracking-tight">3단락 : 일정 및 예산 등 검증된 사실 정보</span>
+</div>
+<span class="text-[11px] font-mono text-slate-400">데이터 검증: #SEG-006, #SEG-007</span>
+</div>
+<div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 text-[15px] leading-relaxed text-slate-800 font-normal">
+                주무 당국은 초기 인프라 보강 및 사전 계도 활동을 위해 약 420억 원 규모의 시범 예산을 책정하고, 오는 2024년 4분기 중 공식 법령 공포를 목표로 일정을 조율 중이다. 부처 실무진은 이미 주요 지자체 및 현장 협회와 두 차례 실무협의를 마친 상태다.
+              </div>
+</div>
+<!-- Paragraph 4 -->
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded bg-primary"></span>
+<span class="text-xs font-bold text-primary tracking-tight">4단락 : 향후 절차 및 이견 조율 과제</span>
+</div>
+<span class="text-[11px] font-mono text-slate-400">전망 및 후속 절차</span>
+</div>
+<div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 text-[15px] leading-relaxed text-slate-800 font-normal">
+                다만 규제 적용 대상과 처벌 수위를 둘러싼 소관 위원회 및 산업계 내부의 이견이 완전히 해소되지 않아, 내달 초로 예정된 당정 협의 및 공청회 단계에서 실질적인 법안 통과 수위가 최종 결정될 전망이다.
+              </div>
+</div>
+</div>
+<!-- Bottom Audio Dock (Clean Floating Toast) -->
+<div class="hidden border-t border-slate-200 bg-slate-900 text-white p-4 items-center justify-between" id="audioPlayerDock">
+<div class="flex items-center gap-3.5">
+<div class="w-8 h-8 rounded-full bg-secondary flex items-center justify-center animate-pulse">
+<span class="material-symbols-outlined text-[18px]">graphic_eq</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-xs font-semibold text-blue-300" id="audioDockSpeaker">화자 A (대변인)</span>
+<span class="font-mono text-[11px] bg-slate-800 px-1.5 py-0.5 rounded text-slate-300" id="audioDockTimecode">02:15 - 02:28</span>
+</div>
+<p class="text-xs text-slate-300 italic truncate max-w-lg mt-0.5" id="audioDockQuote">
+                  "시행 시기와 관련해서는 업계 및 관계부처의 의견을 수렴해 유연하게 조율할 여지가..."
+                </p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-1.5 hover:bg-slate-800 rounded text-slate-300 hover:text-white transition-colors" id="btnAudioDockPlay" onclick="toggleDockPlay()" title="일시정지/재생">
+<span class="material-symbols-outlined text-[20px]" id="iconAudioDockPlay">pause</span>
+</button>
+<button class="p-1.5 hover:bg-slate-800 rounded text-slate-400 hover:text-white transition-colors" onclick="closeAudioDock()" title="닫기">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+</div>
+</article>
+</div>
+<!-- ========================================== -->
+<!-- RIGHT COLUMN: EXTRACTED SOURCE REPOSITORY (5 Cols) -->
+<!-- ========================================== -->
+<div class="xl:col-span-5 flex flex-col gap-6">
+<!-- Main Extracted Source Material Card -->
+<div class="bg-surface-card border border-slate-border rounded-xl shadow-sm overflow-hidden">
+<!-- Card Header & Clean Tab Navigation -->
+<div class="p-5 pb-0 border-b border-slate-border">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-secondary text-[22px]">source_notes</span>
+<div>
+<h2 class="text-base font-bold text-primary">추출 취재 데이터</h2>
+<p class="text-xs text-on-surface-variant">전사 엔진 자동 분석 7개 핵심 항목</p>
+</div>
+</div>
+<span class="text-xs font-mono font-medium text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full">
+                실시간 연동
+              </span>
+</div>
+<!-- Tab Switcher -->
+<div class="flex items-center gap-1 -mb-px">
+<button class="tab-btn px-3.5 py-2.5 text-xs font-bold text-secondary border-b-2 border-secondary flex items-center gap-1.5 transition-colors whitespace-nowrap shrink-0" id="btn-tab-quotes" onclick="switchTab('tab-quotes')">
+<span class="">인용문 후보</span>
+<span class="bg-blue-100 text-secondary text-[11px] px-1.5 py-0.2 rounded-full font-mono font-semibold">4</span>
+</button>
+<button class="tab-btn px-3.5 py-2.5 text-xs font-semibold text-slate-500 hover:text-slate-800 border-b-2 border-transparent flex items-center gap-1.5 transition-colors whitespace-nowrap shrink-0" id="btn-tab-facts" onclick="switchTab('tab-facts')">
+<span class="">검증된 사실</span>
+<span class="bg-slate-100 text-slate-600 text-[11px] px-1.5 py-0.2 rounded-full font-mono font-semibold">3</span>
+</button>
+<button class="tab-btn px-3.5 py-2.5 text-xs font-semibold text-slate-500 hover:text-slate-800 border-b-2 border-transparent flex items-center gap-1.5 transition-colors whitespace-nowrap shrink-0" id="btn-tab-verify" onclick="switchTab('tab-verify')">
+<span class="">확인 필요</span>
+<span class="w-2 h-2 rounded-full bg-rose-500 shrink-0"></span>
+</button>
+<button class="tab-btn px-3.5 py-2.5 text-xs font-semibold text-slate-500 hover:text-slate-800 border-b-2 border-transparent flex items-center gap-1.5 transition-colors whitespace-nowrap shrink-0" id="btn-tab-summary" onclick="switchTab('tab-summary')">
+<span class="">발언 요약</span>
+</button>
+</div>
+</div>
+<!-- TAB 1: 인용문 후보 (4 Quotes) -->
+<div class="tab-panel p-5 space-y-3.5" id="tab-quotes">
+<div class="flex items-center justify-between text-xs text-on-surface-variant pb-1">
+<span class="">원문 오디오 불변 인용문 (클릭 시 초안 복사/삽입)</span>
+<span class="font-mono text-slate-400">4 SEGMENTS</span>
+</div>
+<!-- Quote Item 1 -->
+<div class="p-4 rounded-xl border border-slate-200 bg-white hover:border-slate-300 hover:shadow-xs transition-all space-y-2.5">
+<div class="flex items-center justify-between">
+<span class="text-xs font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded">화자 A (대변인)</span>
+<button class="font-mono text-xs text-secondary hover:underline flex items-center gap-1" onclick="playAudioSnippet('02:15', '화자 A (대변인)', '시행 시기와 관련해서는 업계 및 관계부처의 의견을 수렴해...')">
+<span class="material-symbols-outlined text-[14px]">play_circle</span>
+                  02:15 · #SEG-003
+                </button>
+</div>
+<p class="text-xs text-slate-800 leading-relaxed italic font-normal">
+                “시행 시기와 관련해서는 업계 및 관계부처의 의견을 수렴해 유연하게 조율할 여지가 열려 있습니다.”
+              </p>
+<div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+<span class="text-emerald-700 font-medium">신뢰도 99.4% (주변 소음 낮음)</span>
+<button class="text-secondary font-semibold hover:underline" onclick="insertQuote('“시행 시기와 관련해서는 업계 및 관계부처의 의견을 수렴해 유연하게 조율할 여지가 열려 있습니다.”')">
+                  + 인용문 복사
+                </button>
+</div>
+</div>
+<!-- Quote Item 2 -->
+<div class="p-4 rounded-xl border border-slate-200 bg-white hover:border-slate-300 hover:shadow-xs transition-all space-y-2.5">
+<div class="flex items-center justify-between">
+<span class="text-xs font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded">화자 A (대변인)</span>
+<button class="font-mono text-xs text-secondary hover:underline flex items-center gap-1" onclick="playAudioSnippet('05:42', '화자 A (대변인)', '기존 사업자들의 행정적 혼선을 막기 위해...')">
+<span class="material-symbols-outlined text-[14px]">play_circle</span>
+                  05:42 · #SEG-008
+                </button>
+</div>
+<p class="text-xs text-slate-800 leading-relaxed italic font-normal">
+                “기존 사업자들의 행정적 혼선을 막기 위해 단계적 유예 기간을 두는 방안 역시 내부 검토 중에 있습니다.”
+              </p>
+<div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+<span class="text-emerald-700 font-medium">신뢰도 98.1% (단어 정밀 보정됨)</span>
+<button class="text-secondary font-semibold hover:underline" onclick="insertQuote('“기존 사업자들의 행정적 혼선을 막기 위해 단계적 유예 기간을 두는 방안 역시 내부 검토 중에 있습니다.”')">
+                  + 인용문 복사
+                </button>
+</div>
+</div>
+<!-- Quote Item 3 -->
+<div class="p-4 rounded-xl border border-slate-200 bg-white hover:border-slate-300 hover:shadow-xs transition-all space-y-2.5">
+<div class="flex items-center justify-between">
+<span class="text-xs font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded">화자 B (출입기자)</span>
+<button class="font-mono text-xs text-secondary hover:underline flex items-center gap-1" onclick="playAudioSnippet('11:08', '화자 B (출입기자)', '관계부처 합의가 안 된 상태에서 연내 강행은 무리라는...')">
+<span class="material-symbols-outlined text-[14px]">play_circle</span>
+                  11:08 · #SEG-014
+                </button>
+</div>
+<p class="text-xs text-slate-800 leading-relaxed italic font-normal">
+                “관계부처 합의가 안 된 상태에서 연내 강행은 무리라는 의견이 나오는데 일정 변경은 전혀 없습니까?”
+              </p>
+<div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+<span class="text-slate-600 font-medium">신뢰도 97.2% (기자 질문 구간)</span>
+<button class="text-secondary font-semibold hover:underline" onclick="insertQuote('“관계부처 합의가 안 된 상태에서 연내 강행은 무리라는 의견이 나오는데 일정 변경은 전혀 없습니까?”')">
+                  + 인용문 복사
+                </button>
+</div>
+</div>
+<!-- Quote Item 4 -->
+<div class="p-4 rounded-xl border border-slate-200 bg-white hover:border-slate-300 hover:shadow-xs transition-all space-y-2.5">
+<div class="flex items-center justify-between">
+<span class="text-xs font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded">화자 A (대변인)</span>
+<button class="font-mono text-xs text-secondary hover:underline flex items-center gap-1" onclick="playAudioSnippet('11:45', '화자 A (대변인)', '정부안의 뼈대는 이미 서 있으며 세부 시행령 위임 항목에서...')">
+<span class="material-symbols-outlined text-[14px]">play_circle</span>
+                  11:45 · #SEG-015
+                </button>
+</div>
+<p class="text-xs text-slate-800 leading-relaxed italic font-normal">
+                “정부안의 뼈대는 이미 서 있으며 세부 시행령 위임 항목에서 유연성을 발휘하겠다는 뜻입니다.”
+              </p>
+<div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+<span class="text-emerald-700 font-medium">신뢰도 99.0% (핵심 정책 해명)</span>
+<button class="text-secondary font-semibold hover:underline" onclick="insertQuote('“정부안의 뼈대는 이미 서 있으며 세부 시행령 위임 항목에서 유연성을 발휘하겠다는 뜻입니다.”')">
+                  + 인용문 복사
+                </button>
+</div>
+</div>
+</div>
+<!-- TAB 2: 검증된 사실 정보 -->
+<div class="tab-panel hidden p-5 space-y-3" id="tab-facts">
+<div class="text-xs text-on-surface-variant mb-1">발화 속 일시, 금액, 기관 고유명사 검증 목록</div>
+<div class="border border-slate-200 rounded-xl overflow-hidden text-xs">
+<div class="bg-slate-50 px-4 py-2.5 font-bold text-slate-700 border-b border-slate-200 grid grid-cols-12">
+<div class="col-span-3">구분</div>
+<div class="col-span-6">추출 사실 정보</div>
+<div class="col-span-3 text-right">음성 위치</div>
+</div>
+<!-- Fact 1 -->
+<div class="px-4 py-3 bg-white border-b border-slate-100 grid grid-cols-12 items-center hover:bg-slate-50/70 transition-colors">
+<div class="col-span-3 font-semibold text-slate-800 flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                  예산 규모
+                </div>
+<div class="col-span-6">
+<div class="font-bold text-slate-900">약 420억 원</div>
+<div class="text-[11px] text-slate-500">초기 인프라 보강 및 계도 사업비</div>
+</div>
+<div class="col-span-3 text-right font-mono text-secondary">
+                  #SEG-006 (03:40)
+                </div>
+</div>
+<!-- Fact 2 -->
+<div class="px-4 py-3 bg-white border-b border-slate-100 grid grid-cols-12 items-center hover:bg-slate-50/70 transition-colors">
+<div class="col-span-3 font-semibold text-slate-800 flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                  공포 시기
+                </div>
+<div class="col-span-6">
+<div class="font-bold text-slate-900">2024년 4분기 공포</div>
+<div class="text-[11px] text-slate-500">입법예고 절차 이후 최종 일정</div>
+</div>
+<div class="col-span-3 text-right font-mono text-secondary">
+                  #SEG-007 (04:12)
+                </div>
+</div>
+<!-- Fact 3 -->
+<div class="px-4 py-3 bg-white grid grid-cols-12 items-center hover:bg-slate-50/70 transition-colors">
+<div class="col-span-3 font-semibold text-slate-800 flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                  실무 협의
+                </div>
+<div class="col-span-6">
+<div class="font-bold text-slate-900">지자체 대상 2회 완료</div>
+<div class="text-[11px] text-slate-500">○○부 1차관 주재 협의체 회의</div>
+</div>
+<div class="col-span-3 text-right font-mono text-secondary">
+                  #SEG-011 (08:50)
+                </div>
+</div>
+</div>
+</div>
+<!-- TAB 3: 확인 필요 항목 (Needs Verification) -->
+<div class="tab-panel hidden p-5 space-y-3.5" id="tab-verify">
+<div class="flex items-center justify-between text-xs font-semibold text-rose-700 bg-rose-50 px-3 py-2 rounded-lg border border-rose-200">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">error</span>
+                기사 작성 전 전화/추가 확인 요망 (2건)
+              </span>
+<span class="text-[11px] text-rose-600 font-normal">데스크 주의보</span>
+</div>
+<!-- Warning 1 -->
+<div class="p-4 rounded-xl border border-rose-200 bg-rose-50/40 space-y-2">
+<div class="flex items-center justify-between">
+<span class="text-xs font-bold text-rose-800 bg-rose-100 px-2 py-0.5 rounded">수치 모호</span>
+<span class="font-mono text-xs text-rose-700">07:12 · #SEG-009</span>
+</div>
+<p class="text-xs text-slate-800 leading-relaxed font-medium">
+                “‘3천억 원’인지 ‘3백억 원’인지 발화 말단부 마이크 간섭으로 음질 불명확.”
+              </p>
+<div class="pt-2 border-t border-rose-100 flex items-center justify-between text-[11px]">
+<span class="text-slate-600">추정치: 문맥상 300억 원 유력하나 보도자료 대조 필요</span>
+<button class="text-rose-700 font-semibold hover:underline flex items-center gap-0.5" onclick="playAudioSnippet('07:12', '화자 A (대변인)', '예산 세부 내역 발언 중 수치 모호 구간...')">
+<span class="material-symbols-outlined text-[13px]">volume_up</span>
+                  구간 반복 청취
+                </button>
+</div>
+</div>
+<!-- Warning 2 -->
+<div class="p-4 rounded-xl border border-amber-200 bg-amber-50/40 space-y-2">
+<div class="flex items-center justify-between">
+<span class="text-xs font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded">발화 상충</span>
+<span class="font-mono text-xs text-amber-700">14:20 · #SEG-019</span>
+</div>
+<p class="text-xs text-slate-800 leading-relaxed font-medium">
+                “시행 유예 기간에 대해 ‘최대 1년’(대변인 브리핑 초반)과 ‘6개월 내외’(후반 질의응답) 상충.”
+              </p>
+<div class="pt-2 border-t border-amber-100 flex items-center justify-between text-[11px]">
+<span class="text-slate-600">대변인실 공식 보도참고자료 유선 확인 요망</span>
+<button class="text-amber-800 font-semibold hover:underline flex items-center gap-0.5" onclick="playAudioSnippet('14:20', '화자 A ↔ 화자 B', '시행 유예 기간 발언 상충 구간...')">
+<span class="material-symbols-outlined text-[13px]">volume_up</span>
+                  해당 구간 청취
+                </button>
+</div>
+</div>
+</div>
+<!-- TAB 4: 발언 요약 -->
+<div class="tab-panel hidden p-5 space-y-3" id="tab-summary">
+<div class="text-xs text-on-surface-variant mb-1">전체 브리핑 48분 압축 3대 골자</div>
+<div class="space-y-2.5 text-xs">
+<div class="p-3 rounded-lg border border-slate-200 bg-white flex items-start gap-3">
+<span class="w-5 h-5 rounded-full bg-slate-800 text-white font-mono text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">1</span>
+<div>
+<div class="font-bold text-slate-900">정책 추진 불변 및 보완 협의</div>
+<p class="text-slate-600 mt-0.5 leading-relaxed">연내 개편안 통과 원칙은 고수하되, 관계 부처 및 현장 반발을 고려해 세부 조항 협의 가능성 개방.</p>
+</div>
+</div>
+<div class="p-3 rounded-lg border border-slate-200 bg-white flex items-start gap-3">
+<span class="w-5 h-5 rounded-full bg-slate-800 text-white font-mono text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">2</span>
+<div>
+<div class="font-bold text-slate-900">초기 재정 투자 및 단계 집행</div>
+<p class="text-slate-600 mt-0.5 leading-relaxed">초기 약 420억 원 규모 시범 사업비를 편성하여 계도 기간 중 업계 시스템 개편 직접 지원.</p>
+</div>
+</div>
+<div class="p-3 rounded-lg border border-slate-200 bg-white flex items-start gap-3">
+<span class="w-5 h-5 rounded-full bg-slate-800 text-white font-mono text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">3</span>
+<div>
+<div class="font-bold text-slate-900">후속 절차 및 당정 공청회</div>
+<p class="text-slate-600 mt-0.5 leading-relaxed">내달 초 국회 소관 상임위 사전 당정 협의회를 거쳐 최종 정부 공포안을 확정 공표 예정.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Compact & Refined Verification Overview (No Clunky Gauges) -->
+<div class="bg-white border border-slate-border rounded-xl p-5 shadow-sm space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">fact_check</span>
+<span class="text-sm font-bold text-primary">취재원 검증 요약</span>
+</div>
+<div class="flex items-center gap-1 text-xs">
+<span class="text-slate-500">신뢰도 지수:</span>
+<span class="font-mono font-bold text-secondary">96.8%</span>
+</div>
+</div>
+<div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 96.8%;"></div>
+</div>
+<div class="grid grid-cols-3 gap-2.5 pt-2 text-center text-xs">
+<div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+<span class="text-[11px] text-slate-500 block">식별 화자</span>
+<span class="font-bold text-slate-900 mt-0.5 block">3명 (A, B, C)</span>
+</div>
+<div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+<span class="text-[11px] text-slate-500 block">인용 후보</span>
+<span class="font-bold text-secondary mt-0.5 block">12개 세그먼트</span>
+</div>
+<div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+<span class="text-[11px] text-slate-500 block">교차 대조</span>
+<span class="font-bold text-emerald-700 mt-0.5 block">전수 완료</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- INTERACTION SCRIPTS -->
+<script>
+    // Tab Switching Logic
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-panel').forEach(panel => {
+        panel.classList.add('hidden');
+      });
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('text-secondary', 'border-secondary', 'font-bold');
+        btn.classList.add('text-slate-500', 'border-transparent', 'font-semibold');
+      });
+
+      const selectedPanel = document.getElementById(tabId);
+      if (selectedPanel) {
+        selectedPanel.classList.remove('hidden');
+      }
+
+      const activeBtn = document.getElementById('btn-' + tabId);
+      if (activeBtn) {
+        activeBtn.classList.remove('text-slate-500', 'border-transparent', 'font-semibold');
+        activeBtn.classList.add('text-secondary', 'border-secondary', 'font-bold');
+      }
+    }
+
+    // Lead Radio Replacement in First Paragraph
+    const leadTexts = {
+      fact: "○○부는 18일 정부세종청사에서 열린 비공개 브리핑을 통해 신규 규제 개편안의 연내 도입을 추진하되 세부 보완책은 관계부처 협의를 거치겠다고 밝혔다. 정부 차원의 정책 추진 기조는 유지하지만, 이해관계자들의 반발과 부처 간 이견을 감안해 연착륙 방안을 다각도로 모색하겠다는 취지로 풀이된다.",
+      quote: "“원칙적 추진에는 변함이 없으나 현장 수용성을 최우선으로 검토하겠다”는 ○○부 관계자의 발언은 당초 강경했던 규제 도입 속도 조절 가능성을 시사했다. 업계의 반발 기류와 주무 부처 간의 입장차를 조율하겠다는 신호탄으로 읽힌다.",
+      issue: "핵심 쟁점이었던 시행 시기를 두고 ○○부 측이 관계부처 협의 가능성을 열어두면서 입법 논의가 새 국면을 맞이하게 될 전망이다. 당초 연내 강행 기조에서 한발 물러서 유연한 조율을 시사하면서 이해관계자들의 타협안 마련에 관심이 집중되고 있다."
+    };
+
+    document.querySelectorAll('input[name="leadOption"]').forEach(radio => {
+      radio.addEventListener('change', function() {
+        const leadP = document.getElementById('draftLeadParagraph');
+        if (leadP && leadTexts[this.value]) {
+          leadP.textContent = leadTexts[this.value];
+        }
+
+        // Highlight selected radio card
+        document.querySelectorAll('input[name="leadOption"]').forEach(r => {
+          const parent = r.closest('label');
+          if (r.checked) {
+            parent.classList.add('border-blue-500/40', 'bg-blue-50/30');
+            parent.classList.remove('border-slate-border', 'bg-white');
+          } else {
+            parent.classList.remove('border-blue-500/40', 'bg-blue-50/30');
+            parent.classList.add('border-slate-border', 'bg-white');
+          }
+        });
+      });
+    });
+
+    // Audio Playback Dock Micro-interaction
+    let isPlaying = false;
+    function playAudioSnippet(timecode, speaker, quotePreview) {
+      const dock = document.getElementById('audioPlayerDock');
+      const timecodeEl = document.getElementById('audioDockTimecode');
+      const speakerEl = document.getElementById('audioDockSpeaker');
+      const quoteEl = document.getElementById('audioDockQuote');
+      const iconPlay = document.getElementById('iconAudioDockPlay');
+
+      if (dock) {
+        dock.classList.remove('hidden');
+        dock.classList.add('flex');
+        timecodeEl.textContent = timecode;
+        speakerEl.textContent = speaker;
+        quoteEl.textContent = `"${quotePreview}"`;
+        isPlaying = true;
+        iconPlay.textContent = 'pause';
+      }
+    }
+
+    function toggleDockPlay() {
+      const iconPlay = document.getElementById('iconAudioDockPlay');
+      isPlaying = !isPlaying;
+      iconPlay.textContent = isPlaying ? 'pause' : 'play_arrow';
+    }
+
+    function closeAudioDock() {
+      const dock = document.getElementById('audioPlayerDock');
+      if (dock) {
+        dock.classList.add('hidden');
+        dock.classList.remove('flex');
+        isPlaying = false;
+      }
+    }
+
+    // Insert or Copy Quote helper
+    function insertQuote(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert('인용구가 클립보드에 복사되었습니다. 기사 본문에 바로 붙여넣을 수 있습니다.');
+      }).catch(() => {
+        alert('복사되었습니다: ' + text);
+      });
+    }
+
+    // Copy Draft Button
+    document.getElementById('btnCopyDraft')?.addEventListener('click', () => {
+      const text = [
+        document.getElementById('draftLeadParagraph')?.innerText || '',
+        '“시행 시기와 관련해서는 업계 및 관계부처의 의견을 수렴해 유연하게 조율할 여지가 열려 있습니다.”',
+        '주무 당국은 초기 인프라 보강 및 사전 계도 활동을 위해 약 420억 원 규모의 시범 예산을 책정하고...',
+        '다만 규제 적용 대상과 처벌 수위를 둘러싼 소관 위원회 및 산업계 내부의 이견이 완전히 해소되지 않아...'
+      ].join('\n\n');
+      
+      navigator.clipboard.writeText(text).then(() => {
+        alert('기사 초안 전체가 클립보드에 복사되었습니다.');
+      });
+    });
+  </script>
+
+
+</body></html>

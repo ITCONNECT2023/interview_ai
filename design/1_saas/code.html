@@ -1,0 +1,378 @@
+<!DOCTYPE html><html lang="ko"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>PressNote - 취재 오디오 전사 및 분석</title>
+<!-- Google Fonts: Noto Sans KR, JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;family=Noto+Sans+KR:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans KR"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eef6ff',
+              100: '#dbeafe',
+              500: '#2563eb',
+              600: '#1d4ed8',
+              700: '#1e40af',
+              900: '#0f172a'
+            }
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+</head>
+<body class="bg-[#f8fafc] text-slate-800 min-h-screen flex flex-col antialiased">
+<!-- SaaS Global Header -->
+<header class="h-16 bg-white border-b border-slate-200 sticky top-0 z-50 flex items-center justify-between px-6 lg:px-10 shadow-sm"><!-- Brand Logo -->
+<div class="flex items-center gap-8 shrink-0">
+  <div class="flex items-center gap-2.5 cursor-pointer whitespace-nowrap shrink-0">
+    <div class="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow-sm shadow-blue-500/20 shrink-0">
+      <span class="material-symbols-outlined text-[20px]">graphic_eq</span>
+    </div>
+    <div class="shrink-0">
+      <div class="flex items-center gap-2">
+        <span class="font-bold text-[17px] tracking-tight text-slate-900 leading-none">PressNote</span>
+        <span class="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-200/60 leading-none">Desk</span>
+      </div>
+      <span class="text-[11px] text-slate-500 leading-none block mt-0.5 whitespace-nowrap">스마트 취재지원 플랫폼</span>
+    </div>
+  </div>
+  <!-- Clean 4-Step Stepper in Header -->
+  <nav class="hidden md:flex items-center gap-1.5 pl-4 border-l border-slate-200 text-sm whitespace-nowrap shrink-0">
+    <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 font-semibold whitespace-nowrap shrink-0">
+      <span class="w-5 h-5 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-mono shrink-0">1</span>
+      <span class="">파일 업로드</span>
+    </div>
+    <span class="material-symbols-outlined text-slate-300 text-base shrink-0">chevron_right</span>
+    <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-slate-500 font-medium whitespace-nowrap shrink-0">
+      <span class="w-5 h-5 rounded-full bg-slate-200 text-slate-600 text-xs flex items-center justify-center font-mono shrink-0">2</span>
+      <span class="">전사 · 화자 분석</span>
+    </div>
+    <span class="material-symbols-outlined text-slate-300 text-base shrink-0">chevron_right</span>
+    <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-slate-500 font-medium whitespace-nowrap shrink-0">
+      <span class="w-5 h-5 rounded-full bg-slate-200 text-slate-600 text-xs flex items-center justify-center font-mono shrink-0">3</span>
+      <span class="">전사록 검토</span>
+    </div>
+    <span class="material-symbols-outlined text-slate-300 text-base shrink-0">chevron_right</span>
+    <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-slate-500 font-medium whitespace-nowrap shrink-0">
+      <span class="w-5 h-5 rounded-full bg-slate-200 text-slate-600 text-xs flex items-center justify-center font-mono shrink-0">4</span>
+      <span class="">기사 초안</span>
+    </div>
+  </nav>
+</div>
+<!-- User / Profile / Status -->
+<div class="flex items-center gap-3 shrink-0 whitespace-nowrap">
+  <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 text-xs text-slate-600 font-medium whitespace-nowrap shrink-0">
+    <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+    <span class="whitespace-nowrap">정치2부 강도훈 기자</span>
+  </div>
+  <button class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-medium text-xs hover:bg-slate-800 transition shrink-0">
+    <span class="">강</span>
+  </button>
+</div></header>
+<!-- Main Container -->
+<main class="flex-1 max-w-7xl w-full mx-auto p-6 md:p-10 flex flex-col gap-8">
+<!-- Page Title & Guidance Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2 border-b border-slate-200">
+<div>
+<h1 class="text-2xl font-bold text-slate-900 tracking-tight">취재 음성 파일 업로드</h1>
+<p class="text-slate-500 text-sm mt-1">백브리핑, 대담, 인터뷰 음성을 등록하면 AI가 화자 분리 및 텍스트 전사를 자동으로 수행합니다.</p>
+</div>
+<div class="flex items-center gap-2 text-xs text-slate-500 bg-white px-3.5 py-2 rounded-lg border border-slate-200 shadow-sm self-start md:self-auto shrink-0 whitespace-nowrap">
+  <span class="material-symbols-outlined text-[16px] text-blue-600 shrink-0">lock</span>
+  <span class="whitespace-nowrap">엔드투엔드 암호화 전송 중 (SSL/TLS 1.3)</span>
+</div>
+</div>
+<!-- 2-Column Main Workspace -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Left Column: Audio Dropzone & AI Options (7 cols) -->
+<div class="lg:col-span-7 flex flex-col gap-6">
+<!-- Upload Card -->
+<div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
+<div class="flex items-center justify-between mb-5">
+<h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+<span class="material-symbols-outlined text-blue-600 text-xl">cloud_upload</span>
+              음성 파일 등록
+            </h2>
+<span class="text-xs text-slate-500 font-mono">STEP 01</span>
+</div>
+<!-- Dropzone Box -->
+<div class="relative group rounded-xl border-2 border-dashed border-slate-300 hover:border-blue-500 bg-slate-50/60 hover:bg-blue-50/30 transition-all duration-200 p-10 flex flex-col items-center justify-center text-center cursor-pointer" id="dropzone">
+<input accept=".mp3,.m4a,.wav,audio/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" id="audio-file-input" type="file">
+<!-- Icon & Graphic -->
+<div class="w-16 h-16 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center mb-4 group-hover:scale-105 group-hover:border-blue-200 group-hover:text-blue-600 transition text-slate-700">
+<span class="material-symbols-outlined text-[32px]">audio_file</span>
+</div>
+<!-- Labels -->
+<h3 class="text-base font-semibold text-slate-900 mb-1">
+              음성 파일을 이곳에 끌어다 놓거나 <span class="text-blue-600 underline underline-offset-2">파일 찾기</span>
+</h3>
+<p class="text-xs text-slate-500 mb-6 max-w-sm">
+              통화 녹음, 브리핑 현장 녹음 등 다양한 오디오 소스를 등록할 수 있습니다.
+            </p>
+<!-- Specification Badges -->
+<div class="flex flex-wrap items-center justify-center gap-2 text-xs text-slate-600"><span class="px-3 py-1 rounded-md bg-white border border-slate-200 font-mono text-[11px] shadow-2xs whitespace-nowrap shrink-0">
+  포맷: MP3, M4A, WAV
+</span>
+<span class="px-3 py-1 rounded-md bg-white border border-slate-200 font-mono text-[11px] shadow-2xs whitespace-nowrap shrink-0">
+  최대 길이: 10분
+</span>
+<span class="px-3 py-1 rounded-md bg-white border border-slate-200 font-mono text-[11px] shadow-2xs whitespace-nowrap shrink-0">
+  최대 용량: 100MB
+</span></div>
+</div>
+<!-- File Status Bar -->
+<div class="mt-4 p-3.5 rounded-lg bg-slate-50 border border-slate-200/80 flex items-center justify-between text-xs text-slate-500 whitespace-nowrap" id="file-status-bar">
+  <div class="flex items-center gap-2 overflow-hidden shrink min-w-0" id="file-status-left">
+    <span class="material-symbols-outlined text-slate-400 text-[18px] shrink-0">radio_button_unchecked</span>
+    <span class="truncate font-medium">선택된 파일이 없습니다.</span>
+  </div>
+  <span class="font-mono text-slate-400 text-[11px] shrink-0 ml-3 whitespace-nowrap" id="file-status-right">0.0 MB</span>
+</div>
+</div>
+<!-- AI Engine Preset (Clean SaaS Settings Card) -->
+<div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+<span class="material-symbols-outlined text-blue-600 text-xl">tune</span>
+              전사 및 자동 분석 옵션
+            </h3>
+<span class="text-xs text-blue-600 font-medium">데스크 권장 설정</span>
+</div>
+<p class="text-xs text-slate-500 mb-5 leading-relaxed">
+            전사 직후 기사 작성에 필요한 핵심 인용구 및 팩트체크 항목을 사전 추출합니다.
+          </p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+<label class="flex items-start gap-3 p-3.5 rounded-xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50/50 cursor-pointer transition">
+<input checked="" class="mt-0.5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4" type="checkbox">
+<div class="flex flex-col">
+<span class="text-xs font-semibold text-slate-800">화자 분리 (Diarization)</span>
+<span class="text-[11px] text-slate-500 mt-0.5">기자 및 취재원 발화 구간 분리</span>
+</div>
+</label>
+<label class="flex items-start gap-3 p-3.5 rounded-xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50/50 cursor-pointer transition">
+<input checked="" class="mt-0.5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4" type="checkbox">
+<div class="flex flex-col">
+<span class="text-xs font-semibold text-slate-800">핵심 인용구 자동 추출</span>
+<span class="text-[11px] text-slate-500 mt-0.5">보도 가치 높은 발언 상위 10선 도출</span>
+</div>
+</label>
+<label class="flex items-start gap-3 p-3.5 rounded-xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50/50 cursor-pointer transition">
+<input checked="" class="mt-0.5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4" type="checkbox">
+<div class="flex flex-col">
+<span class="text-xs font-semibold text-slate-800">맥락 기반 팩트체크 플래그</span>
+<span class="text-[11px] text-slate-500 mt-0.5">숫자, 날짜, 통계 검증 태그 생성</span>
+</div>
+</label>
+<label class="flex items-start gap-3 p-3.5 rounded-xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50/50 cursor-pointer transition">
+<input checked="" class="mt-0.5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4" type="checkbox">
+<div class="flex flex-col">
+<span class="text-xs font-semibold text-slate-800">전문 용어 자동 교정</span>
+<span class="text-[11px] text-slate-500 mt-0.5">부처 약칭, 경제/법률 용어 오탈자 보정</span>
+</div>
+</label>
+</div>
+</div>
+</div>
+<!-- Right Column: Metadata Registration & Final Submit (5 cols) -->
+<div class="lg:col-span-5 flex flex-col gap-6">
+<!-- Metadata Form Card -->
+<div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 flex flex-col gap-6">
+<div class="flex items-center justify-between border-b border-slate-100 pb-4">
+<h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+<span class="material-symbols-outlined text-blue-600 text-xl">description</span>
+              취재 메타데이터
+            </h2>
+<span class="text-xs text-red-500 font-medium">* 필수 항목</span>
+</div>
+<form class="space-y-4" onsubmit="event.preventDefault();">
+<!-- Coverage Title -->
+<div class="space-y-1.5">
+<label class="text-xs font-semibold text-slate-700 block" for="coverage-title">
+                취재 / 보도 건명 <span class="text-red-500">*</span>
+</label>
+<input class="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition" id="coverage-title" placeholder="예: 국토교통부 신임 대변인 현안 백브리핑" type="text">
+</div>
+<!-- Speaker Identifier -->
+<div class="space-y-1.5">
+<label class="text-xs font-semibold text-slate-700 block" for="speaker-identifier">
+                취재원 식별자 <span class="text-red-500">*</span>
+</label>
+<div class="relative">
+<input class="w-full pl-3.5 pr-10 py-2.5 rounded-lg border border-slate-200 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition" id="speaker-identifier" placeholder="예: 화자 A (차관보), 화자 B (출입기자)" type="text">
+<span class="material-symbols-outlined absolute right-3 top-2.5 text-slate-400 text-lg pointer-events-none">record_voice_over</span>
+</div>
+</div>
+<!-- Reporter Byline & Bureau (2 Columns) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="space-y-1.5">
+<label class="text-xs font-semibold text-slate-700 block" for="reporter-byline">
+                  담당 기자
+                </label>
+<input class="w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-slate-50 text-sm text-slate-700 outline-none" id="reporter-byline" type="text" value="강도훈 기자 (정치2부)">
+</div>
+<div class="space-y-1.5">
+<label class="text-xs font-semibold text-slate-700 block" for="beat-department">
+                  출입처 / 부처
+                </label>
+<input class="w-full px-3 py-2.5 rounded-lg border border-slate-200 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition" id="beat-department" placeholder="예: 국토부, 금융위" type="text">
+</div>
+</div>
+<!-- Recording Date and Time -->
+<div class="space-y-1.5">
+<label class="text-xs font-semibold text-slate-700 block">녹음 일시</label>
+<div class="grid grid-cols-2 gap-2">
+<input class="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs text-slate-700 font-mono focus:border-blue-500 outline-none" type="date" value="2024-10-28">
+<input class="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs text-slate-700 font-mono focus:border-blue-500 outline-none" type="time" value="14:30">
+</div>
+</div>
+<!-- Embargo / Record status -->
+<div class="space-y-1.5 pt-1">
+<label class="text-xs font-semibold text-slate-700 block">발언 공개 범위 (보도 조건)</label>
+<div class="grid grid-cols-3 gap-2"><button class="py-2 px-1 text-xs font-medium rounded-lg border border-blue-500 bg-blue-50/80 text-blue-700 text-center transition whitespace-nowrap truncate" type="button" title="On the Record">
+  On the Record
+</button>
+<button class="py-2 px-1 text-xs font-medium rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 text-center transition whitespace-nowrap truncate" type="button" title="Background">
+  Background
+</button>
+<button class="py-2 px-1 text-xs font-medium rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 text-center transition whitespace-nowrap truncate" type="button" title="Off the Record">
+  Off the Record
+</button></div>
+</div>
+</form>
+<!-- Ethics Compliance Agreement -->
+<div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 mt-2">
+<label class="flex items-start gap-3 cursor-pointer">
+<input class="mt-0.5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4" id="ethics-consent" type="checkbox">
+<div class="space-y-1">
+<span class="text-xs font-semibold text-slate-900 block">
+                  취재 윤리 준수 및 개인정보 취급 방침 동의 <span class="text-red-500">*</span>
+</span>
+<p class="text-[11px] text-slate-500 leading-relaxed">
+                  언론윤리헌장 및 사내 보도 가이드라인에 따라 취재 목적 외 무단 배포를 금하며, 동의된 취재 초안 작성 용도로만 활용함에 동의합니다.
+                </p>
+</div>
+</label>
+</div>
+<!-- Main Call-To-Action Button -->
+<button class="w-full h-12 rounded-xl bg-slate-200 text-slate-400 font-semibold text-sm flex items-center justify-center gap-2 cursor-not-allowed transition-all duration-200 shadow-none" disabled="" id="submit-cta">
+<span class="material-symbols-outlined text-[18px]">lock</span>
+<span class="">음성 파일을 먼저 등록해 주세요</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Clean B2B Footer Security Strip -->
+<div class="bg-white rounded-xl border border-slate-200 p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-xs text-slate-600">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700 shrink-0">
+<span class="material-symbols-outlined text-[20px]">verified_user</span>
+</div>
+<div>
+<div class="flex items-center gap-2 font-medium text-slate-800">
+<span class="">취재원 보호를 위한 보안 및 보관 규정</span>
+<span class="px-2 py-0.5 rounded bg-slate-100 font-mono text-[10px] text-slate-600 border border-slate-200">AES-256 비트 암호화</span>
+</div>
+<p class="text-[11px] text-slate-500 mt-0.5">
+            등록된 원본 오디오 및 전사 결과는 데스크 저장소에 격리되며, 최대 30일 경과 후 자동 영구 파기됩니다.
+          </p>
+</div>
+</div>
+<div class="flex items-center gap-2 shrink-0 self-end md:self-auto"><button class="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-medium transition whitespace-nowrap shrink-0">
+  보안 인증서 확인
+</button>
+<button class="px-3 py-1.5 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 text-xs font-medium transition whitespace-nowrap shrink-0">
+  즉시 영구 삭제 요청
+</button></div>
+</div>
+</main>
+<!-- Interactive Logic for State parity -->
+<script>
+    (function() {
+      const fileInput = document.getElementById('audio-file-input');
+      const dropzone = document.getElementById('dropzone');
+      const statusLeft = document.getElementById('file-status-left');
+      const statusRight = document.getElementById('file-status-right');
+      const ethicsConsent = document.getElementById('ethics-consent');
+      const submitBtn = document.getElementById('submit-cta');
+
+      let hasFile = false;
+
+      // Drag styling
+      ['dragenter', 'dragover'].forEach(e => {
+        dropzone.addEventListener(e, (ev) => {
+          ev.preventDefault();
+          dropzone.classList.add('border-blue-500', 'bg-blue-50/50');
+        });
+      });
+      ['dragleave', 'drop'].forEach(e => {
+        dropzone.addEventListener(e, (ev) => {
+          ev.preventDefault();
+          dropzone.classList.remove('border-blue-500', 'bg-blue-50/50');
+        });
+      });
+
+      // File select
+      fileInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+          const file = this.files[0];
+          hasFile = true;
+          const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+          statusLeft.innerHTML = `
+            <span class="material-symbols-outlined text-blue-600 text-[18px]">check_circle</span>
+            <span class="font-medium text-slate-900">${file.name}</span>
+          `;
+          statusRight.textContent = `${sizeMB} MB · 업로드 완료`;
+          statusRight.className = "font-mono text-blue-600 font-medium text-[11px]";
+          updateCtaState();
+        }
+      });
+
+      ethicsConsent.addEventListener('change', updateCtaState);
+
+      function updateCtaState() {
+        if (hasFile && ethicsConsent.checked) {
+          submitBtn.disabled = false;
+          submitBtn.className = "w-full h-12 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-all duration-200";
+          submitBtn.innerHTML = `
+            <span class="material-symbols-outlined text-[19px]">bolt</span>
+            <span>전사 및 분석 시작 (다음 단계로 이동)</span>
+          `;
+        } else if (hasFile && !ethicsConsent.checked) {
+          submitBtn.disabled = true;
+          submitBtn.className = "w-full h-12 rounded-xl bg-slate-200 text-slate-500 font-semibold text-sm flex items-center justify-center gap-2 cursor-not-allowed transition-all duration-200";
+          submitBtn.innerHTML = `
+            <span class="material-symbols-outlined text-[18px]">rule</span>
+            <span>취재 윤리 방침에 동의해 주세요</span>
+          `;
+        } else {
+          submitBtn.disabled = true;
+          submitBtn.className = "w-full h-12 rounded-xl bg-slate-200 text-slate-400 font-semibold text-sm flex items-center justify-center gap-2 cursor-not-allowed transition-all duration-200";
+          submitBtn.innerHTML = `
+            <span class="material-symbols-outlined text-[18px]">lock</span>
+            <span>음성 파일을 먼저 등록해 주세요</span>
+          `;
+        }
+      }
+    })();
+  </script>
+
+
+</body></html>
