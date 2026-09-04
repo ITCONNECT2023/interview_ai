@@ -20,10 +20,10 @@ const schema = z.object({
   CMS_API_BASE_URL: optionalUrl,
   CMS_API_TOKEN: optionalString,
   CRON_SECRET: optionalSecret,
-  DATA_RETENTION_DAYS: z.coerce.number().int().positive().default(30),
-  MAX_AUDIO_DURATION_SECONDS: z.coerce.number().int().positive().default(600),
-  MAX_AUDIO_BYTES: z.coerce.number().int().positive().default(104_857_600),
-  APP_ORIGIN: z.string().url().default("http://localhost:3000"),
+  DATA_RETENTION_DAYS: z.preprocess(emptyToUndefined, z.coerce.number().int().positive().default(30)),
+  MAX_AUDIO_DURATION_SECONDS: z.preprocess(emptyToUndefined, z.coerce.number().int().positive().default(600)),
+  MAX_AUDIO_BYTES: z.preprocess(emptyToUndefined, z.coerce.number().int().positive().default(104_857_600)),
+  APP_ORIGIN: z.preprocess(emptyToUndefined, z.string().url().default("http://localhost:3000")),
 });
 
 export type ServerEnv = z.infer<typeof schema>;
